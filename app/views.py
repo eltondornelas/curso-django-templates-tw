@@ -1,8 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 
 def index(request):
-    nome_da_empresa = 'TreinaWeb'
+    nome_da_empresa = 'treinaWeb'
     descricao = 'Há mais de 12 anos formando desenvolvedores de ponta! ' \
                 'São mais de 4.000 horas de conteúdo, com formações ' \
                 'completas e com foco no mercado de trabalho. '
@@ -14,7 +15,24 @@ def index(request):
         'email': 'contato@treinaweb.com.br'
     }
 
+    cursos_home = {
+        '1': {'titulo': 'Django Fundamentos',
+              'descricao': 'Aprenda toda a base de Django!'},
+        '2': {'titulo': 'Flask Fundamentos',
+              'descricao': 'Aprenda toda a base de Flask!'},
+        '3': {'titulo': 'Python OO', 'descricao': 'Aprenda OO com Python !'},
+    }
+
     return render(request, 'empresa/index.html',
                   {'nome_empresa': nome_da_empresa,
                    'descricao_empresa': descricao,
-                   'contato_empresa': contato_empresa})
+                   'contato_empresa': contato_empresa,
+                   'cursos_home': cursos_home})
+
+
+def about(request):
+    return HttpResponse('Página sobre')
+
+
+def contact(request, id):
+    return HttpResponse(id)

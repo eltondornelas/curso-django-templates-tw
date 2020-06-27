@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load meus_filtros %}
 <html lang="en">
 
 <head>
@@ -36,13 +37,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" href="{% url 'about' %}">About</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" href="{% url 'contact' id=5 %}">Contact</a>
           </li>
         </ul>
       </div>
@@ -54,8 +55,14 @@
     <div class="container h-100">
       <div class="row h-100 align-items-center">
         <div class="col-lg-12">
-          <h1 class="display-4 text-white mt-5 mb-2">{{ nome_empresa }}</h1>
-          <p class="lead mb-5 text-white-50">{{ descricao_empresa}}</p>
+          <h1 class="display-4 text-white mt-5 mb-2">{{ nome_empresa|capfirst }}</h1>
+          <p class="lead mb-5 text-white-50">{{ descricao_empresa | upper}}</p>
+
+          {% comment %}
+            Aqui é um comentário que não é exibido na página, nem mesmo através
+            do inspect do browser
+          {% endcomment %}
+
         </div>
       </div>
     </div>
@@ -76,7 +83,7 @@
         <h2>Dados de Contato</h2>
         <hr>
         <address>
-          <br>{{ contato_empresa.endereco }}
+          <br>{{ contato_empresa.endereco | remover_letra:'a' | lower }}
         </address>
         <address>
           <abbr title="Phone">P:</abbr>
@@ -90,52 +97,43 @@
     <!-- /.row -->
 
     <div class="row">
+      {% for curso_id, curso in cursos_home.items %}
       <div class="col-md-4 mb-5">
         <div class="card h-100">
           <img class="card-img-top" src="https://placehold.it/300x200" alt="">
           <div class="card-body">
-            <h4 class="card-title">Card title</h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque sequi doloribus.</p>
+
+            {% comment %}
+              {% if curso.titulo == 'Django Fundamentos' %}
+              Alem desse modo, podemos utilizar o ifequal no exemplo abaixo
+              Existe também o ifnotequal (!=)
+            {% endcomment %}
+
+            {% ifequal curso.titulo 'Django Fundamentos' %}
+              <h2 class="card-title">{{ curso.titulo }}</h2>
+            {% else %}
+              <h4 class="card-title">{{ curso_id }} - {{ curso.titulo }}</h4>
+            {% endifequal %}
+            <p class="card-text">{{ curso.descricao }}</p>
           </div>
           <div class="card-footer">
             <a href="#" class="btn btn-primary">Find Out More!</a>
           </div>
         </div>
       </div>
-      <div class="col-md-4 mb-5">
-        <div class="card h-100">
-          <img class="card-img-top" src="https://placehold.it/300x200" alt="">
-          <div class="card-body">
-            <h4 class="card-title">Card title</h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque sequi doloribus totam ut praesentium aut.</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="btn btn-primary">Find Out More!</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-5">
-        <div class="card h-100">
-          <img class="card-img-top" src="https://placehold.it/300x200" alt="">
-          <div class="card-body">
-            <h4 class="card-title">Card title</h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="btn btn-primary">Find Out More!</a>
-          </div>
-        </div>
-      </div>
+      {% empty %}
+        <h3>Novos cursos serão lançados em breve!</h3>
+      {% endfor %}
     </div>
     <!-- /.row -->
-
   </div>
   <!-- /.container -->
 
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+      <p class="m-0 text-center text-white">Copyright &copy; {{ nome_empresa }}
+        {% now "Y" as current_year %} {{ current_year }}</p>
     </div>
     <!-- /.container -->
   </footer>
